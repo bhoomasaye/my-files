@@ -1,0 +1,103 @@
+import tkinter as tk
+from tkinter import messagebox, simpledialog
+
+# Create the main application class
+class ContactBook:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("My Contact Book")
+        self.master.geometry("400x600")
+        
+        # Create a list to hold contacts
+        self.contacts = {}
+
+        # Colors and font settings
+        self.bg_color = "#FDE9EA"  # Soft pink background
+        self.button_color = "#E8A1A6"  # Button color
+        self.heading_color = "#C49CC0"  # Heading background color
+        self.button_font = ("Arial", 14, "bold")  # Bigger font for buttons
+        self.heading_font = ("Arial", 18, "bold")  # Bigger font for heading
+
+        # Set window background color
+        self.master.configure(bg=self.bg_color)
+
+        # Create heading label at the top
+        self.heading_label = tk.Label(master, text="📖 My Contact Book 📖", bg=self.heading_color, fg="white", font=self.heading_font)
+        self.heading_label.pack(pady=20, padx=20)
+
+        # Create buttons
+        self.add_button = tk.Button(master, text="📖 Add Contact", command=self.add_contact, bg=self.button_color, font=self.button_font)
+        self.add_button.pack(pady=10)
+
+        self.view_button = tk.Button(master, text="📖 View Contacts", command=self.view_contacts, bg=self.button_color, font=self.button_font)
+        self.view_button.pack(pady=10)
+
+        self.search_button = tk.Button(master, text="📖 Search Contact", command=self.search_contact, bg=self.button_color, font=self.button_font)
+        self.search_button.pack(pady=10)
+
+        self.update_button = tk.Button(master, text="📖 Update Contact", command=self.update_contact, bg=self.button_color, font=self.button_font)
+        self.update_button.pack(pady=10)
+
+        self.delete_button = tk.Button(master, text="📖 Delete Contact", command=self.delete_contact, bg=self.button_color, font=self.button_font)
+        self.delete_button.pack(pady=10)
+
+    # Method to add a new contact
+    def add_contact(self):
+        name = simpledialog.askstring("Input", "Enter contact name:")
+        phone = simpledialog.askstring("Input", "Enter phone number:")
+        email = simpledialog.askstring("Input", "Enter email:")
+        address = simpledialog.askstring("Input", "Enter address:")
+        
+        if name and phone:
+            self.contacts[name] = {'phone': phone, 'email': email, 'address': address}
+            messagebox.showinfo("Success", f"Contact '{name}' added!")
+        else:
+            messagebox.showwarning("Warning", "Name and Phone number are required!")
+
+    # Method to view all contacts
+    def view_contacts(self):
+        if not self.contacts:
+            messagebox.showinfo("Contact List", "No contacts available!")
+            return
+        contact_list = "\n".join([f"{name}: {details['phone']}" for name, details in self.contacts.items()])
+        messagebox.showinfo("Contact List", contact_list)
+
+    # Method to search for a contact
+    def search_contact(self):
+        name = simpledialog.askstring("Input", "Enter the name or phone number to search:")
+        found = {name: details for name, details in self.contacts.items() if name in self.contacts or details['phone'] == name}
+        
+        if found:
+            contact_info = "\n".join([f"{name}: {details['phone']}, {details['email']}, {details['address']}" for name, details in found.items()])
+            messagebox.showinfo("Search Result", contact_info)
+        else:
+            messagebox.showwarning("Not Found", "Contact not found!")
+
+    # Method to update a contact
+    def update_contact(self):
+        name = simpledialog.askstring("Input", "Enter the name of the contact to update:")
+        if name in self.contacts:
+            phone = simpledialog.askstring("Input", "Enter new phone number:", initialvalue=self.contacts[name]['phone'])
+            email = simpledialog.askstring("Input", "Enter new email:", initialvalue=self.contacts[name]['email'])
+            address = simpledialog.askstring("Input", "Enter new address:", initialvalue=self.contacts[name]['address'])
+
+            self.contacts[name] = {'phone': phone, 'email': email, 'address': address}
+            messagebox.showinfo("Success", f"Contact '{name}' updated!")
+        else:
+            messagebox.showwarning("Not Found", "Contact not found!")
+
+    # Method to delete a contact
+    def delete_contact(self):
+        name = simpledialog.askstring("Input", "Enter the name of the contact to delete:")
+        if name in self.contacts:
+            del self.contacts[name]
+            messagebox.showinfo("Success", f"Contact '{name}' deleted!")
+        else:
+            messagebox.showwarning("Not Found", "Contact not found!")
+
+# Create the main window
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = ContactBook(root)
+    root.mainloop()
+

@@ -1,0 +1,66 @@
+import tkinter as tk
+from tkinter import messagebox, simpledialog
+
+# Function to add a new task
+def add_task():
+    task = simpledialog.askstring("New Task", "Enter the task:")
+    if task:
+        task_listbox.insert(tk.END, task)
+        task_listbox.itemconfig(tk.END, fg="#000000")  # Default black for incomplete task
+
+# Function to delete the selected task
+def delete_task():
+    try:
+        selected_task_index = task_listbox.curselection()[0]
+        task_listbox.delete(selected_task_index)
+    except IndexError:
+        messagebox.showwarning("Delete Task", "Please select a task to delete.")
+
+# Function to mark the selected task as done
+def mark_done():
+    try:
+        selected_task_index = task_listbox.curselection()[0]
+        task_listbox.itemconfig(selected_task_index, fg="#90EE90", selectbackground="#90EE90")  # Green color for done task
+    except IndexError:
+        messagebox.showwarning("Mark Done", "Please select a task to mark as done.")
+
+# Main GUI Window
+root = tk.Tk()
+root.title("Cute To-Do List")
+root.geometry("500x400")
+root.config(bg="#fefbd8")  # Light yellow background
+
+# Create a frame to hold the task list
+frame = tk.Frame(root, bg="#fefbd8")
+frame.pack(pady=20)
+
+# Title Label
+title_label = tk.Label(frame, text="🌸 My Cute To-Do List 🌸", font=("Comic Sans MS", 16, "bold"), bg="#fefbd8", fg="#ff69b4")
+title_label.pack()
+
+# Scrollable listbox to display tasks
+task_listbox = tk.Listbox(frame, height=10, width=40, font=("Comic Sans MS", 12), selectbackground="#ffb6c1")
+task_listbox.pack(pady=10)
+
+# Buttons Frame
+buttons_frame = tk.Frame(root, bg="#fefbd8")
+buttons_frame.pack()
+
+# Add Task Button with Emoji
+add_button = tk.Button(buttons_frame, text="➕ Add Task", font=("Comic Sans MS", 12), bg="#add8e6", fg="#000000", command=add_task)
+add_button.grid(row=0, column=0, padx=10, pady=10)
+
+# Delete Task Button with Emoji
+delete_button = tk.Button(buttons_frame, text="🗑️ Delete Task", font=("Comic Sans MS", 12), bg="#ffb6c1", fg="#000000", command=delete_task)
+delete_button.grid(row=0, column=1, padx=10, pady=10)
+
+# Mark Task Done Button with Emoji
+done_button = tk.Button(buttons_frame, text="✔️ Mark Done", font=("Comic Sans MS", 12), bg="#98fb98", fg="#000000", command=mark_done)
+done_button.grid(row=0, column=2, padx=10, pady=10)
+
+# Footer label
+footer_label = tk.Label(root, text="✨ Stay organized and cute! ✨", font=("Comic Sans MS", 10, "italic"), bg="#fefbd8", fg="#ff69b4")
+footer_label.pack(pady=10)
+
+# Start the main event loop
+root.mainloop()
